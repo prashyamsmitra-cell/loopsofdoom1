@@ -36,5 +36,5 @@ export const AnalyticsSchema = z.object({
   event_type: z.enum(['page_view','project_view','modal_open','ai_chat_started','ai_chat_rated','contact_submitted']),
   project_id: z.string().uuid().optional(),
   session_id: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 })

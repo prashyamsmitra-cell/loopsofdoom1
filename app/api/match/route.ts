@@ -41,11 +41,17 @@ export async function POST(request: Request) {
     ${JSON.stringify(projects, null, 2)}`
 
     // Log the contact event asynchronously
-    supabase.from('analytics_events').insert([{
-      event_type: 'contact_submitted',
-      session_id,
-      metadata: { query }
-    }]).catch(err => console.error('Failed to log contact event:', err));
+    ;(async () => {
+      try {
+        await supabase.from('analytics_events').insert([{
+          event_type: 'contact_submitted',
+          session_id,
+          metadata: { query }
+        }])
+      } catch (err) {
+        console.error('Failed to log contact event:', err)
+      }
+    })();
 
     const stream = await anthropic.messages.stream({
       model: 'claude-3-5-sonnet-20241022',
