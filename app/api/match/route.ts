@@ -1,3 +1,5 @@
+
+import { NextResponse } from 'next/server'
 import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { chatRatelimit } from '@/lib/ratelimit'
@@ -8,7 +10,7 @@ export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || 'anonymous'
     const { success } = await chatRatelimit.limit(ip)
-    
+
     if (!success) {
       return NextResponse.json({ error: 'Too many requests', code: 'RATE_LIMIT_EXCEEDED' }, { status: 429 })
     }
@@ -24,7 +26,7 @@ export async function POST(request: Request) {
       .single()
 
     if (flag && !flag.enabled) {
-       return NextResponse.json(
+      return NextResponse.json(
         { error: 'Smart Contact form is currently disabled', code: 'FEATURE_DISABLED' },
         { status: 503 }
       )
@@ -40,18 +42,18 @@ export async function POST(request: Request) {
     Available Projects:
     ${JSON.stringify(projects, null, 2)}`
 
-    // Log the contact event asynchronously
-    ;(async () => {
-      try {
-        await supabase.from('analytics_events').insert([{
-          event_type: 'contact_submitted',
-          session_id,
-          metadata: { query }
-        }])
-      } catch (err) {
-        console.error('Failed to log contact event:', err)
-      }
-    })();
+      // Log the contact event asynchronously
+      ; (async () => {
+        try {
+          await supabase.from('analytics_events').insert([{
+            event_type: 'contact_submitted',
+            session_id,
+            metadata: { query }
+          }])
+        } catch (err) {
+          console.error('Failed to log contact event:', err)
+        }
+      })();
 
     const stream = await anthropic.messages.stream({
       model: 'claude-3-5-sonnet-20241022',
