@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+* { 
+  cursor: none; 
+}
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+body { 
+  background-color: #111111; 
+  color: #B3B3B3; 
+  overflow-x: hidden; 
+}
+
+::selection { 
+  background: #E50914; 
+  color: #FFFFFF; 
+}
+
+::-webkit-scrollbar { 
+  width: 4px; 
+}
+
+::-webkit-scrollbar-track { 
+  background: #111111; 
+}
+
+::-webkit-scrollbar-thumb { 
+  background: #E50914; 
+  border-radius: 2px; 
+}
+
+/* Base custom text cursor settings to ensure the user still has an idea of where they are */
+input, textarea {
+  caret-color: #E50914;
+}
