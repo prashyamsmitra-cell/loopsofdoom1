@@ -73,15 +73,21 @@ ${project.ai_system_prompt}`
             }
 
             // Async background update - DO NOT await here to keep response fast
-            Promise.all([
-              supabase.rpc('increment_project_chat_count', { project_id }),
-              supabase.from('ai_chat_sessions').upsert({
-                project_id,
-                session_id,
-                messages: [...messages, { role: 'assistant', content: fullResponse, timestamp: new Date().toISOString() }],
-                updated_at: new Date().toISOString()
-              }, { onConflict: 'session_id' })
-            ]).catch(err => console.error('Failed to update chat session background:', err))
+            ;(async () => {
+              try {
+                await Promise.all([
+                  supabase.rpc('increment_project_chat_count', { project_id }),
+                  supabase.from('ai_chat_sessions').upsert({
+                    project_id,
+                    session_id,
+                    messages: [...messages, { role: 'assistant', content: fullResponse, timestamp: new Date().toISOString() }],
+                    updated_at: new Date().toISOString()
+                  }, { onConflict: 'session_id' })
+                ])
+              } catch (err) {
+                console.error('Failed to update chat session background:', err)
+              }
+            })()
 
           } catch (streamError) {
              console.error('Stream error:', streamError)

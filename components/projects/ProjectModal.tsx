@@ -20,11 +20,17 @@ export function ProjectModal({ project, onClose, chatEnabled, onOpenChat }: Proj
     if (project) {
       document.body.style.overflow = 'hidden'
       // Fire analytics event
-      fetch('/api/analytics', {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ event_type: 'modal_open', project_id: project.id })
-      }).catch(console.error)
+      ;(async () => {
+        try {
+          await fetch('/api/analytics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_type: 'modal_open', project_id: project.id })
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      })()
     } else {
       document.body.style.overflow = 'auto'
     }

@@ -71,16 +71,22 @@ export function useChat(projectId: string, sessionId: string, projectTitle: stri
 
   const submitRating = async (val: 1 | -1) => {
     setRating(val)
-    fetch('/api/analytics', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event_type: 'ai_chat_rated',
-        project_id: projectId,
-        session_id: sessionId,
-        metadata: { rating: val }
-      })
-    }).catch(console.error) // Fire and forget
+    ;(async () => {
+      try {
+        await fetch('/api/analytics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_type: 'ai_chat_rated',
+            project_id: projectId,
+            session_id: sessionId,
+            metadata: { rating: val }
+          })
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    })()
   }
 
   return {
